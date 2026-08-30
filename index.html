@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body data-theme="ledger">
+
+<button class="theme-toggle" id="themeToggle" type="button" title="Сменить тему" aria-label="Сменить тему">
+  <svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></svg>
+  <svg class="ti-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/></svg>
+</button>
+
+<section id="view-home">
+  <div class="home-wrap">
+    <div class="home-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20V13M22 20V7"/></svg>
+    </div>
+    <div class="home-title">Trading Journal</div>
+
+    <div class="greeting-card">
+      <div class="g1" id="homeGreeting"><span class="loader-dots"><span></span><span></span><span></span></span></div>
+      <div class="g2" id="homeDate">—</div>
+      <div class="g3" id="homeClock">00:00:00</div>
+    </div>
+
+    <div class="home-cols">
+      <div class="home-panel">
+        <div class="home-panel-title">Перейти</div>
+        <div class="home-link" data-goto="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Обзор</div>
+        <div class="home-link" data-goto="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg>Журнал сделок</div>
+        <div class="home-link" data-goto="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Календарь</div>
+      </div>
+      <div class="home-panel">
+        <div class="home-panel-title">Ещё</div>
+        <div class="home-link" data-goto="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Аналитика</div>
+        <div class="home-link" data-goto="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Счета</div>
+      </div>
+    </div>
+
+    <div class="home-ticker"><div class="home-ticker-track" id="homeTicker"></div></div>
+  </div>
+</section>
+
+<div class="shell" id="appShell">
+  <aside class="sidebar">
+    <div class="brand" data-goto="home">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20V13M22 20V7"/></svg>
+      <span class="brand-name">Trading Journal</span>
+    </div>
+    <div class="nav-label">Навигация</div>
+    <div class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Обзор</div>
+    <div class="nav-item" data-view="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg>Журнал сделок</div>
+    <div class="nav-item" data-view="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Календарь</div>
+    <div class="nav-item" data-view="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Аналитика</div>
+    <div class="nav-item" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Счета</div>
+    <div class="sidebar-foot">
+      <div class="k">Общий P&amp;L</div>
+      <div class="v" id="sidebarPnl">$0.00</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="crumbs" id="crumbs">Trading Journal / Обзор</div>
+        <div class="pagetitle" id="pagetitle">Обзор</div>
+      </div>
+      <div class="pagetime"><span id="dateStr"></span> · <span id="clockStr"></span></div>
+    </div>
+
+    <section class="view2" id="view-dashboard">
+      <div class="widget-grid">
+        <div class="widget-card widget-gauge">
+          <div class="widget-head"><span class="widget-title">Прогресс <i id="gaugeSubtitle">· доходность</i></span><span class="widget-dots">⋮</span></div>
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 200 118" class="gauge-svg">
+              <defs>
+                <filter id="gaugeGlow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <path class="gauge-track" d="M20,104 A80,80 0 0,1 180,104"/>
+              <path class="gauge-fill" id="gaugeFill" d="M100,24 L100,24" filter="url(#gaugeGlow)"/>
+              <circle class="gauge-zero" cx="100" cy="24" r="2.4"/>
+              <circle class="gauge-pulse" id="gaugePulse" cx="100" cy="24" r="6"/>
+              <circle class="gauge-knob" id="gaugeKnob" cx="100" cy="24" r="6"/>
+            </svg>
+            <div class="gauge-center">
+              <div class="gauge-value" id="gaugeValue">+0.0%</div>
+              <div class="gauge-label">текущий прогресс</div>
+            </div>
+          </div>
+          <div class="gauge-range">
+            <span class="gauge-range-item">min</span>
+            <span class="gauge-range-item">max</span>
+          </div>
+        </div>
+
+        <div class="widget-card widget-balance">
+          <div class="widget-head"><span class="widget-title">Баланс счетов</span><span class="widget-dots">⋮</span></div>
+          <div class="balance-value" id="w-balance">$0.00</div>
+          <div class="balance-sub">
+            <span class="balance-sub-label">Общий P&amp;L</span>
+            <span class="balance-sub-value" id="w-pnl">$0.00</span>
+          </div>
+        </div>
+
+        <div class="widget-card widget-winrate">
+          <div class="widget-head"><span class="widget-title">Win Rate</span><span class="widget-dots">⋮</span></div>
+          <div class="winrate-body">
+            <div class="winrate-donut"><canvas id="winrateDonut"></canvas><div class="winrate-center" id="winrateCenter">0%</div><div class="winrate-tooltip" id="winrateTooltip"></div></div>
+            <div class="winrate-legend">
+              <div class="wl-item"><span class="wl-dot win"></span>Win</div>
+              <div class="wl-item"><span class="wl-dot lose"></span>Lose</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget-card widget-ratio">
+          <div class="widget-head"><span class="widget-title">Long — Short Ratio</span><span class="widget-dots">⋮</span></div>
+          <div class="ratio-pills">
+            <span class="ratio-pill long"><span class="ratio-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M6 17L17 6M17 6H8M17 6V15"/></svg></span><span id="ratioLongPct">0%</span></span>
+            <span class="ratio-pill short"><span id="ratioShortPct">0%</span><span class="ratio-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M6 7L17 18M17 18H8M17 18V9"/></svg></span></span>
+          </div>
+          <div class="ratio-bar"><div class="ratio-bar-long" id="ratioBarLong"></div><div class="ratio-bar-short" id="ratioBarShort"></div></div>
+          <div class="ratio-rows">
+            <div class="ratio-row"><span>Long сделки</span><b id="ratioLongCount">0</b></div>
+            <div class="ratio-row"><span>Short сделки</span><b id="ratioShortCount">0</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="dot"></span>Профиль результатов</div><div class="panel-note">4 показателя</div></div>
+          <div class="chart-box chart-box-square"><canvas id="radarChart"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="dot"></span>Кривая депозита</div><div class="panel-note" id="growthNote">нет данных</div></div>
+          <div class="chart-box"><canvas id="growthChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view2" id="view-journal">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="dot"></span>Журнал сделок</div>
+          <div class="btn-row">
+            <div class="panel-note" id="journalCount" style="align-self:center;">0 записей</div>
+            <button class="btn" id="openAddTrade">+ Добавить сделку</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>№</th><th>Открытие</th><th>Закрытие</th><th>Инстр.</th><th>Напр.</th><th>Сессия</th><th>Счёт</th><th>Gross</th><th>Комиссия</th><th>Net</th><th>Лот</th><th>RR</th><th>Сетап</th><th>Заметка</th><th></th></tr></thead>
+            <tbody id="journalBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="journalEmpty">Пока нет ни одной сделки — нажмите «Добавить сделку», чтобы внести первую.</div>
+      </div>
+    </section>
+
+    <section class="view2" id="view-calendar">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="cal-nav"><div class="cal-btn" id="calPrev">‹</div><div class="cal-month" id="calMonthLabel">—</div><div class="cal-btn" id="calNext">›</div></div>
+          <div class="cal-summary" id="calSummary">P&amp;L: $0.00 · Сделок: 0</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </section>
+
+    <section class="view2" id="view-analytics">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-top"><div class="stat-label">Win Rate</div><span class="stat-icon ring" id="a-winrate-ring" style="--icon-color:var(--accent)"></span></div><div class="stat-value" id="a-winrate">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label">Total P&amp;L</div><span class="stat-icon" style="--icon-color:var(--green)">$</span></div><div class="stat-value" id="a-pnl">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label">Returns</div><span class="stat-icon" style="--icon-color:var(--accent)">✓</span></div><div class="stat-value" id="a-returns">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label">Profit Factor</div><span class="stat-icon" style="--icon-color:var(--amber)">↕</span></div><div class="stat-value" id="a-pf">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label">Consistency</div><span class="stat-icon" style="--icon-color:var(--red)">◎</span></div><div class="stat-value" id="a-cons">—</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="dot"></span>P&amp;L по сессиям</div></div><div class="chart-box"><canvas id="sessionChart"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="dot"></span>R-мультипликаторы</div></div><div class="chart-box"><canvas id="riskChart"></canvas></div></div>
+      </div>
+    </section>
+
+    <section class="view2" id="view-accounts">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><span class="dot"></span>Добавить счёт</div></div>
+        <div class="form-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="form-field"><label>Название</label><input type="text" id="af-name" placeholder="Personal"></div>
+          <div class="form-field"><label>Тип</label><select id="af-type"><option>Live</option><option>Funded</option><option>Backtest</option></select></div>
+          <div class="form-field"><label>Начальный баланс, $</label><input type="text" inputmode="decimal" id="af-init" placeholder="10000"></div>
+          <div class="form-field"><label>Цель, $</label><input type="text" inputmode="decimal" id="af-goal" placeholder="50000"></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="addAcctBtn">+ Добавить счёт</button></div>
+      </div>
+      <div class="acct-grid" id="acctGrid"></div>
+      <div class="empty-state" id="acctEmpty">Пока нет счетов — добавьте первый выше.</div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-overlay" id="tradeModalOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div class="modal-title" id="tradeModalTitle">Новая сделка</div>
+      <button class="modal-close" id="tradeModalClose">×</button>
+    </div>
+    <div class="modal-body" id="tradeModalBody">
+      <div id="tradeFormWrap">
+        <div class="form-grid">
+          <div class="form-field"><label>Открытие</label><input type="datetime-local" step="1" id="f-open"></div>
+          <div class="form-field"><label>Закрытие</label><input type="datetime-local" step="1" id="f-close"></div>
+          <div class="form-field"><label>Счёт</label><select id="f-acc"></select></div>
+
+          <div class="form-field span3"><label>Введите торговую пару</label><input type="text" id="f-pair" style="text-transform:uppercase" autocomplete="off"></div>
+
+          <div class="form-field"><label>Цена входа</label><input type="text" inputmode="decimal" id="f-entry"></div>
+          <div class="form-field"><label>Цена выхода</label><input type="text" inputmode="decimal" id="f-exit"></div>
+          <div class="form-field"></div>
+
+          <div class="form-field"><label>S/L (стоп-лосс)</label><input type="text" inputmode="decimal" id="f-sl"></div>
+          <div class="form-field"><label>T/P (тейк-профит)</label><input type="text" inputmode="decimal" id="f-tp"></div>
+          <div class="form-field"><label>Gross P&amp;L, $</label><input type="text" inputmode="decimal" id="f-gross"></div>
+
+          <div class="form-field"><label>Комиссия, $ (со знаком)</label><input type="text" inputmode="decimal" id="f-comm"></div>
+          <div class="form-field span2"><label>Введите стратегию</label><input type="text" id="f-setup"></div>
+
+          <div class="riskrr-box">
+            <div class="rr-half">
+              <label>Объём, лот
+                <span class="rr-info" data-tip="Размер позиции в лотах — например 0.4 для XAUUSD или 2 для EURUSD, как в MT5.">?</span>
+              </label>
+              <input type="text" inputmode="decimal" id="f-risk">
+            </div>
+            <div class="rr-half">
+              <label>RR, риск/прибыль
+                <span class="rr-info" data-tip="Соотношение потенциальной прибыли к риску по цене: (T/P − вход) ÷ (вход − S/L).">?</span>
+              </label>
+              <input type="text" inputmode="decimal" id="f-rr">
+              <div class="fhint" id="rrAutoHint">&nbsp;</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Комментарий / разбор сделки</label>
+          <textarea id="f-note"></textarea>
+        </div>
+      </div>
+
+      <div id="tradeDetailWrap" style="display:none;">
+        <div class="detail-grid" id="detailGrid"></div>
+        <div class="form-field"><label>Комментарий</label><div class="detail-note" id="detailNote">—</div></div>
+      </div>
+    </div>
+    <div class="modal-foot" id="tradeModalFoot">
+      <button class="btn btn-ghost" id="tradeModalCancel">Отмена</button>
+      <button class="btn btn-ghost" id="tradeModalEdit" style="display:none;">✎ Редактировать</button>
+      <button class="btn" id="tradeModalSave">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay day-modal" id="dayModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="dayModalTitle">21 августа 2026</div>
+      <button class="modal-close" id="dayModalClose">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="day-summary-row">
+        <div>
+          <div class="dsr-label">P&amp;L за день</div>
+          <div class="dsr-pnl" id="dayModalPnl">$0.00</div>
+        </div>
+        <div class="dsr-label" id="dayModalCount">0 сделок</div>
+      </div>
+      <div class="day-trade-list" id="dayTradeList"></div>
+      <div class="day-empty" id="dayModalEmpty" style="display:none;">В этот день сделок не было.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="dayModalCancel">Закрыть</button>
+      <button class="btn" id="dayModalAddTrade">+ Добавить сделку на этот день</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay day-modal" id="acctModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="acctModalTitle">Счёт</div>
+      <button class="modal-close" id="acctModalClose">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="day-summary-row">
+        <div>
+          <div class="dsr-label">Текущий баланс</div>
+          <div class="dsr-pnl" id="acctModalBalance">$0.00</div>
+        </div>
+        <div class="dsr-label" id="acctModalCount">0 сделок</div>
+      </div>
+      <div class="day-trade-list" id="acctTradeList"></div>
+      <div class="day-empty" id="acctModalEmpty" style="display:none;">По этому счёту сделок пока нет.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="acctModalCancel">Закрыть</button>
+      <button class="btn btn-ghost" id="acctModalDelete" style="color:var(--red);border-color:var(--red-dim);">🗑 Удалить счёт</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
