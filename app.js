@@ -122,7 +122,8 @@ function gotoView(name){
   document.querySelectorAll('.nav-item[data-view]').forEach(i=>i.classList.toggle('active', i.dataset.view===name));
   document.querySelectorAll('.view2').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
-  const titles = {dashboard:'Обзор', journal:'Журнал сделок', calendar:'Календарь', analytics:'Аналитика', accounts:'Счета'};
+  if(name==='screenshots') onShotsViewOpen();
+  const titles = {dashboard:'Обзор', journal:'Журнал сделок', screenshots:'Скриншоты', calendar:'Календарь', analytics:'Аналитика', accounts:'Счета'};
   document.getElementById('pagetitle').textContent = titles[name];
   document.getElementById('crumbs').textContent = 'Trading Journal / '+titles[name];
   setTimeout(()=>Object.values(charts).forEach(c=>c&&c.resize()),10);
@@ -386,8 +387,7 @@ function suggestRR(){
 
 
 const pairOptions = ['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDUSD','EURGBP','EURJPY','GBPJPY','EURAUD','AUDJPY','XAUUSD','XAGUSD','XPTUSD','BTCUSD','ETHUSD','SOLUSD','US30','US100','US500','DE40','UK100','JP225','WTIUSD','BRENT'];
-(function initPairAutocomplete(){
-  const input = document.getElementById('f-pair');
+function attachPairAutocomplete(input){
   const list = document.createElement('div');
   list.className = 'autocomplete-list';
   document.body.appendChild(list);
@@ -410,11 +410,12 @@ const pairOptions = ['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDU
   input.addEventListener('blur', ()=> setTimeout(()=>list.classList.remove('show'), 150));
   list.addEventListener('mousedown', e=>{
     const item = e.target.closest('.autocomplete-item');
-    if(item){ input.value = item.dataset.val; list.classList.remove('show'); }
+    if(item){ input.value = item.dataset.val; list.classList.remove('show'); input.dispatchEvent(new Event('change')); }
   });
   window.addEventListener('resize', ()=>{ if(list.classList.contains('show')) position(); });
   window.addEventListener('scroll', ()=>{ if(list.classList.contains('show')) position(); }, true);
-})();
+}
+attachPairAutocomplete(document.getElementById('f-pair'));
 
 (function initFloatingTooltips(){
   const tip = document.createElement('div');
@@ -512,6 +513,7 @@ function openViewModal(id){
     <div class="detail-item"><div class="dk">△ движение цены</div><div class="dv">${d? (d.delta>=0?'+':'')+d.delta.toFixed(5)+' ('+(d.pct>=0?'+':'')+d.pct.toFixed(2)+'%)' : '—'}</div></div>
     <div class="detail-item" style="grid-column:span 2;"><div class="dk">Сетап</div><div class="dv">${t.setup||'—'}</div></div>`;
   document.getElementById('detailNote').textContent = t.note ? t.note : 'Заметок нет.';
+  renderTradeShots(id);
   overlay.classList.add('show');
 }
 function closeModal(){ overlay.classList.remove('show'); editingTradeId=null; }
@@ -581,13 +583,14 @@ function renderJournal(){
       <td>${t.lot||'—'}</td><td>${t.rr||'—'}</td>
       <td>${t.setup?'<span class="badge pair">'+t.setup+'</span>':'—'}</td>
       <td title="${(t.note||'').replace(/"/g,'&quot;')}">${notePreview}</td>
-      <td><button class="del-btn" data-del-trade="${t.id}">×</button></td>`;
+      <td>${shotFlagHtml(t.id)}<button class="del-btn" data-del-trade="${t.id}">×</button></td>`;
     tr.addEventListener('click', (e)=>{ if(e.target.closest('[data-del-trade]')) return; openViewModal(t.id); });
     body.appendChild(tr);
   });
   body.querySelectorAll('[data-del-trade]').forEach(btn=>btn.addEventListener('click',(ev)=>{
     ev.stopPropagation();
     trades = trades.filter(t=>t.id != btn.dataset.delTrade);
+    unlinkShotsFromTrade(btn.dataset.delTrade);
     renderJournal(); renderAccounts(); recalcAll(); saveState();
   }));
 }
@@ -803,6 +806,322 @@ function recalcAll(){
   updateDbCountNote();
 }
 
+/* ================= Скриншоты ================= */
+let screenshots = [];
+let shotSeq = 1;
+let pendingShot = null;
+let viewShotId = null;
+const SHOTS_ON = typeof ShotDB !== 'undefined' && ShotDB.available;
+
+const sfPair = document.getElementById('sf-pair');
+const sfTrade = document.getElementById('sf-trade');
+const sfNote = document.getElementById('sf-note');
+const shotDrop = document.getElementById('shotDrop');
+const shotFile = document.getElementById('shotFile');
+const svPair = document.getElementById('sv-pair');
+const svTrade = document.getElementById('sv-trade');
+const svNote = document.getElementById('sv-note');
+const shotViewOverlay = document.getElementById('shotViewOverlay');
+const shotViewWrap = document.getElementById('shotViewImgWrap');
+
+const SHOT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>';
+
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function shortDT(s){ const d=new Date(s); if(isNaN(d)) return '—'; return d.getFullYear()+'.'+pad(d.getMonth()+1)+'.'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+function tradeLabel(t){ return t.pair+' · '+t.dir+' · '+shortDT(t.close||t.open)+' · '+(t.net>=0?'+':'')+'$'+t.net.toFixed(2); }
+function linkedTrade(s){ return s.tradeId!=null ? (trades.find(x=>x.id==s.tradeId)||null) : null; }
+function shotsForTrade(id){ return screenshots.filter(s=>s.tradeId!=null && s.tradeId==id).sort((a,b)=>a.created.localeCompare(b.created)); }
+function tradeDetailOpen(){ return overlay.classList.contains('show') && detailWrap.style.display!=='none' && !!editingTradeId; }
+function shotFlagHtml(tradeId){
+  const n = shotsForTrade(tradeId).length;
+  return n ? `<span class="shot-flag" title="Скриншотов: ${n}">${SHOT_ICON}${n}</span>` : '';
+}
+
+/* ---- обработка картинки: сжатие + миниатюра ---- */
+function loadImage(blob){
+  return new Promise((resolve,reject)=>{
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = ()=>{ URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('bad image')); };
+    img.src = url;
+  });
+}
+function canvasToBlob(canvas, type, q){ return new Promise(res=>canvas.toBlob(res, type, q)); }
+async function scaleImage(img, maxSide, quality){
+  const k = Math.min(1, maxSide/Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth*k));
+  const h = Math.max(1, Math.round(img.naturalHeight*k));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h);
+  ctx.drawImage(img, 0, 0, w, h);
+  let blob = await canvasToBlob(c, 'image/webp', quality);
+  if(!blob || blob.type!=='image/webp') blob = await canvasToBlob(c, 'image/jpeg', quality);
+  return {blob, w, h};
+}
+async function processImageFile(file){
+  const img = await loadImage(file);
+  const full = await scaleImage(img, 2200, .9);
+  const thumb = await scaleImage(img, 520, .8);
+  return {blob:full.blob, thumb:thumb.blob, w:full.w, h:full.h};
+}
+
+/* ---- хранение ---- */
+function hydrateShot(rec){
+  return Object.assign({}, rec, {url:URL.createObjectURL(rec.blob), turl:URL.createObjectURL(rec.thumb||rec.blob)});
+}
+async function persistShot(s){
+  const {url, turl, ...rec} = s;
+  await ShotDB.put(rec);
+}
+async function addShot(data){
+  const rec = {id:shotSeq++, pair:data.pair, tradeId:data.tradeId||null, note:data.note||'', created:new Date().toISOString(), blob:data.blob, thumb:data.thumb, w:data.w, h:data.h};
+  await ShotDB.put(rec);
+  screenshots.push(hydrateShot(rec));
+  return rec;
+}
+async function loadShots(){
+  if(!SHOTS_ON) return;
+  try{
+    const all = await ShotDB.getAll();
+    screenshots = (all||[]).map(hydrateShot);
+    shotSeq = screenshots.reduce((m,s)=>Math.max(m,s.id),0)+1;
+  }catch(e){ console.warn('screenshots load failed', e); }
+}
+function unlinkShotsFromTrade(id){
+  screenshots.filter(s=>s.tradeId!=null && s.tradeId==id).forEach(s=>{
+    s.tradeId = null;
+    persistShot(s).catch(e=>console.warn('unlink failed', e));
+  });
+  renderShots();
+}
+
+/* ---- выбор сделки ---- */
+function fillTradeSelect(sel, pair, current){
+  const list = [...trades].sort((a,b)=> new Date(b.close||b.open) - new Date(a.close||a.open));
+  const p = (pair||'').trim().toUpperCase();
+  const mine = p ? list.filter(t=>t.pair===p) : [];
+  const rest = p ? list.filter(t=>t.pair!==p) : list;
+  const opt = t=>`<option value="${t.id}">${escHtml(tradeLabel(t))}</option>`;
+  let html = '<option value="">Без привязки</option>';
+  if(mine.length) html += `<optgroup label="Сделки по ${escHtml(p)}">${mine.map(opt).join('')}</optgroup>`;
+  if(rest.length) html += `<optgroup label="${mine.length?'Остальные сделки':'Все сделки'}">${rest.map(opt).join('')}</optgroup>`;
+  sel.innerHTML = html;
+  sel.value = current ? String(current) : '';
+}
+function wirePairTrade(pairEl, tradeEl){
+  const onPair = ()=>{
+    const p = pairEl.value.trim().toUpperCase();
+    let cur = tradeEl.value;
+    if(cur){ const t = trades.find(x=>x.id==cur); if(!t || t.pair!==p) cur = ''; }
+    fillTradeSelect(tradeEl, p, cur);
+  };
+  pairEl.addEventListener('input', onPair);
+  pairEl.addEventListener('change', onPair);
+  tradeEl.addEventListener('change', ()=>{
+    const t = trades.find(x=>x.id==tradeEl.value);
+    if(t){ pairEl.value = t.pair; fillTradeSelect(tradeEl, t.pair, t.id); }
+  });
+}
+attachPairAutocomplete(sfPair);
+attachPairAutocomplete(svPair);
+wirePairTrade(sfPair, sfTrade);
+wirePairTrade(svPair, svTrade);
+
+/* ---- добавление: вставка / файл / перетаскивание ---- */
+function renderPending(){
+  const has = !!pendingShot;
+  const img = document.getElementById('shotPreview');
+  if(has) img.src = pendingShot.url; else img.removeAttribute('src');
+  img.style.display = has ? 'block' : 'none';
+  document.getElementById('shotDropEmpty').style.display = has ? 'none' : 'flex';
+  document.getElementById('shotClear').style.display = has ? 'flex' : 'none';
+  shotDrop.classList.toggle('has', has);
+}
+function clearPending(){
+  if(pendingShot){ URL.revokeObjectURL(pendingShot.url); pendingShot = null; }
+  renderPending();
+}
+async function setPendingFromFile(file){
+  if(!file || !file.type || !file.type.startsWith('image/')){ showToast('Нужен файл-изображение'); return; }
+  try{
+    const p = await processImageFile(file);
+    clearPending();
+    pendingShot = Object.assign({}, p, {url:URL.createObjectURL(p.blob)});
+    renderPending();
+    if(!sfPair.value.trim()) sfPair.focus();
+  }catch(e){ console.warn(e); showToast('Не удалось прочитать изображение'); }
+}
+document.getElementById('shotPickBtn').addEventListener('click', ()=> shotFile.click());
+shotFile.addEventListener('change', ()=>{ const f = shotFile.files[0]; shotFile.value=''; if(f) setPendingFromFile(f); });
+document.getElementById('shotClear').addEventListener('click', clearPending);
+['dragenter','dragover'].forEach(ev=>shotDrop.addEventListener(ev, e=>{ e.preventDefault(); shotDrop.classList.add('drag'); }));
+['dragleave','drop'].forEach(ev=>shotDrop.addEventListener(ev, e=>{ e.preventDefault(); shotDrop.classList.remove('drag'); }));
+shotDrop.addEventListener('drop', e=>{ const f = e.dataTransfer && e.dataTransfer.files[0]; if(f) setPendingFromFile(f); });
+
+document.addEventListener('paste', async e=>{
+  const items = e.clipboardData && e.clipboardData.items;
+  if(!items) return;
+  let file = null;
+  for(const it of items){ if(it.kind==='file' && it.type.startsWith('image/')){ file = it.getAsFile(); break; } }
+  if(!file) return;
+  if(shotViewOverlay.classList.contains('show')) return;
+  const openModal = document.querySelector('.modal-overlay.show');
+  if(openModal){
+    if(tradeDetailOpen()){ e.preventDefault(); attachFileToTrade(file, editingTradeId); }
+    return;
+  }
+  if(document.getElementById('view-screenshots').classList.contains('active')){
+    e.preventDefault();
+    await setPendingFromFile(file);
+    if(pendingShot) showToast('Скриншот вставлен');
+  }
+});
+
+async function attachFileToTrade(file, tradeId){
+  const t = trades.find(x=>x.id==tradeId); if(!t) return;
+  if(!SHOTS_ON){ showToast('Хранилище скриншотов недоступно в этом браузере'); return; }
+  try{
+    const p = await processImageFile(file);
+    await addShot(Object.assign({}, p, {pair:t.pair, tradeId:t.id, note:''}));
+    renderShots(); renderJournal();
+    if(tradeDetailOpen() && editingTradeId==tradeId) renderTradeShots(tradeId);
+    showToast('Скриншот прикреплён к сделке');
+  }catch(e){ console.warn(e); showToast('Не удалось сохранить скриншот'); }
+}
+
+document.getElementById('shotSaveBtn').addEventListener('click', async ()=>{
+  if(!SHOTS_ON){ showToast('Хранилище скриншотов недоступно в этом браузере'); return; }
+  if(!pendingShot){ showToast('Сначала вставьте скриншот'); return; }
+  const pair = sfPair.value.trim().toUpperCase();
+  if(!pair){ sfPair.focus(); showToast('Укажите торговую пару'); return; }
+  const tradeId = sfTrade.value ? Number(sfTrade.value) : null;
+  try{
+    await addShot({blob:pendingShot.blob, thumb:pendingShot.thumb, w:pendingShot.w, h:pendingShot.h, pair, tradeId, note:sfNote.value.trim()});
+  }catch(e){ console.warn(e); showToast('Не удалось сохранить скриншот'); return; }
+  clearPending();
+  sfPair.value = ''; sfNote.value = '';
+  fillTradeSelect(sfTrade, '', '');
+  renderShots(); renderJournal();
+  showToast('Скриншот сохранён');
+});
+
+/* ---- галерея ---- */
+function renderShots(){
+  const grid = document.getElementById('shotGrid');
+  const empty = document.getElementById('shotEmpty');
+  const pairSel = document.getElementById('shotFilterPair');
+  const linkSel = document.getElementById('shotFilterLink');
+  const pairs = [...new Set(screenshots.map(s=>s.pair))].sort();
+  const curPair = pairSel.value;
+  pairSel.innerHTML = '<option value="">Все пары</option>'+pairs.map(p=>`<option value="${escHtml(p)}">${escHtml(p)}</option>`).join('');
+  pairSel.value = pairs.includes(curPair) ? curPair : '';
+
+  const list = screenshots
+    .filter(s=> (!pairSel.value || s.pair===pairSel.value) && (linkSel.value==='all' || (linkSel.value==='linked')===!!linkedTrade(s)))
+    .sort((a,b)=> b.created.localeCompare(a.created));
+
+  document.getElementById('shotCount').textContent = list.length+' '+(list.length===1?'скриншот':'скриншотов');
+  grid.innerHTML = '';
+  empty.style.display = list.length ? 'none' : 'block';
+  empty.textContent = screenshots.length ? 'По выбранным фильтрам ничего нет.' : 'Скриншотов пока нет — вставьте первый через Ctrl+V.';
+
+  list.forEach((s,i)=>{
+    const t = linkedTrade(s);
+    const card = document.createElement('div');
+    card.className = 'shot-card';
+    card.style.animationDelay = Math.min(i,12)*30+'ms';
+    card.innerHTML = `
+      <div class="shot-thumb"><img src="${s.turl}" alt="${escHtml(s.pair)}" loading="lazy"></div>
+      <div class="shot-meta">
+        <div class="shot-meta-row"><span class="badge pair">${escHtml(s.pair)}</span><span class="shot-date">${shortDT(s.created)}</span></div>
+        <div class="shot-link ${t?'linked':''}">${t ? `Сделка · <span style="color:${t.net>=0?'var(--green)':'var(--red)'}">${t.net>=0?'+':''}$${t.net.toFixed(2)}</span>` : 'Без привязки к сделке'}</div>
+        ${s.note ? `<div class="shot-note">${escHtml(s.note)}</div>` : ''}
+      </div>`;
+    card.addEventListener('click', ()=> openShotViewer(s.id));
+    grid.appendChild(card);
+  });
+}
+document.getElementById('shotFilterPair').addEventListener('change', renderShots);
+document.getElementById('shotFilterLink').addEventListener('change', renderShots);
+
+function onShotsViewOpen(){
+  fillTradeSelect(sfTrade, sfPair.value, sfTrade.value);
+  renderShots();
+  if(!SHOTS_ON) showToast('Хранилище скриншотов недоступно в этом браузере');
+}
+
+/* ---- просмотр / редактирование ---- */
+function openShotViewer(id){
+  const s = screenshots.find(x=>x.id==id); if(!s) return;
+  viewShotId = s.id;
+  document.getElementById('shotViewTitle').textContent = s.pair;
+  document.getElementById('shotViewImg').src = s.url;
+  shotViewWrap.classList.remove('zoom');
+  document.getElementById('shotViewMeta').textContent = shortDT(s.created)+' · '+s.w+'×'+s.h+' px';
+  svPair.value = s.pair;
+  fillTradeSelect(svTrade, s.pair, s.tradeId);
+  svNote.value = s.note || '';
+  const t = linkedTrade(s);
+  const alreadyThere = t && tradeDetailOpen() && editingTradeId==t.id;
+  document.getElementById('shotViewOpenTrade').style.display = (t && !alreadyThere) ? 'inline-block' : 'none';
+  shotViewOverlay.classList.add('show');
+}
+function closeShotViewer(){ shotViewOverlay.classList.remove('show'); viewShotId = null; }
+function afterShotChange(){
+  renderShots(); renderJournal();
+  if(tradeDetailOpen()) renderTradeShots(editingTradeId);
+}
+shotViewWrap.addEventListener('click', ()=> shotViewWrap.classList.toggle('zoom'));
+document.getElementById('shotViewClose').addEventListener('click', closeShotViewer);
+shotViewOverlay.addEventListener('click', e=>{ if(e.target===shotViewOverlay) closeShotViewer(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && shotViewOverlay.classList.contains('show')) closeShotViewer(); });
+
+document.getElementById('shotViewSave').addEventListener('click', async ()=>{
+  const s = screenshots.find(x=>x.id==viewShotId); if(!s) return;
+  const pair = svPair.value.trim().toUpperCase();
+  if(!pair){ svPair.focus(); showToast('Укажите торговую пару'); return; }
+  s.pair = pair;
+  s.tradeId = svTrade.value ? Number(svTrade.value) : null;
+  s.note = svNote.value.trim();
+  try{ await persistShot(s); }catch(e){ console.warn(e); showToast('Не удалось сохранить изменения'); return; }
+  closeShotViewer(); afterShotChange();
+  showToast('Изменения сохранены');
+});
+document.getElementById('shotViewDelete').addEventListener('click', async ()=>{
+  const s = screenshots.find(x=>x.id==viewShotId); if(!s) return;
+  if(!confirm('Удалить скриншот?')) return;
+  try{ await ShotDB.delete(s.id); }catch(e){ console.warn(e); showToast('Не удалось удалить скриншот'); return; }
+  URL.revokeObjectURL(s.url); URL.revokeObjectURL(s.turl);
+  screenshots = screenshots.filter(x=>x.id!==s.id);
+  closeShotViewer(); afterShotChange();
+  showToast('Скриншот удалён');
+});
+document.getElementById('shotViewOpenTrade').addEventListener('click', ()=>{
+  const s = screenshots.find(x=>x.id==viewShotId); if(!s || s.tradeId==null) return;
+  const tid = s.tradeId;
+  closeShotViewer();
+  openViewModal(tid);
+});
+
+/* ---- скриншоты внутри окна сделки ---- */
+function renderTradeShots(tradeId){
+  const wrap = document.getElementById('detailShots');
+  const list = shotsForTrade(tradeId);
+  wrap.innerHTML = list.length
+    ? list.map(s=>`<button class="shot-mini" type="button" data-shot="${s.id}" title="${escHtml(s.note||s.pair)}"><img src="${s.turl}" alt="${escHtml(s.pair)}"></button>`).join('')
+    : '<div class="detail-shots-empty">Скриншотов пока нет.</div>';
+  wrap.querySelectorAll('[data-shot]').forEach(b=>b.addEventListener('click', ()=> openShotViewer(b.dataset.shot)));
+}
+document.getElementById('detailAddShot').addEventListener('click', ()=>{
+  const t = trades.find(x=>x.id==editingTradeId); if(!t) return;
+  closeModal();
+  gotoView('screenshots');
+  sfPair.value = t.pair;
+  fillTradeSelect(sfTrade, t.pair, t.id);
+});
+
 function setTheme(name, silent){
   document.body.setAttribute('data-theme', name);
   buildCharts();
@@ -817,6 +1136,7 @@ if(themeToggleBtn) themeToggleBtn.addEventListener('click',()=>{
 
 (async function init(){
   await loadState();
+  await loadShots();
   refreshAccountSelect(); renderAccounts();
   buildCharts();
   renderJournal();
