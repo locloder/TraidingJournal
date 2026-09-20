@@ -86,3 +86,44 @@ const TradeDB = (function () {
 
   return { get, set, delete: del, list, exportAll, importAll, clearAll, available: AVAILABLE };
 })();
+
+/* Хранилище скриншотов: IndexedDB (localStorage слишком мал для картинок) */
+const ShotDB = (function () {
+  const NAME = 'tj_shots';
+  const STORE = 'shots';
+  const AVAILABLE = typeof indexedDB !== 'undefined';
+  let dbPromise = null;
+
+  function open() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      if (!AVAILABLE) { reject(new Error('IndexedDB unavailable')); return; }
+      const req = indexedDB.open(NAME, 1);
+      req.onupgradeneeded = () => {
+        req.result.createObjectStore(STORE, { keyPath: 'id' });
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    dbPromise.catch(() => { dbPromise = null; });
+    return dbPromise;
+  }
+
+  function run(mode, fn) {
+    return open().then((db) => new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, mode);
+      const req = fn(tx.objectStore(STORE));
+      tx.oncomplete = () => resolve(req ? req.result : undefined);
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    }));
+  }
+
+  return {
+    getAll: () => run('readonly', (s) => s.getAll()),
+    put: (rec) => run('readwrite', (s) => s.put(rec)),
+    delete: (id) => run('readwrite', (s) => s.delete(id)),
+    clear: () => run('readwrite', (s) => s.clear()),
+    available: AVAILABLE,
+  };
+})();
