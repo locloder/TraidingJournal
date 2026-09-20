@@ -38,6 +38,7 @@
       </div>
       <div class="home-panel">
         <div class="home-panel-title">Ещё</div>
+        <div class="home-link" data-goto="screenshots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>Скриншоты</div>
         <div class="home-link" data-goto="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Аналитика</div>
         <div class="home-link" data-goto="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Счета</div>
       </div>
@@ -56,6 +57,7 @@
     <div class="nav-label">Навигация</div>
     <div class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Обзор</div>
     <div class="nav-item" data-view="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg>Журнал сделок</div>
+    <div class="nav-item" data-view="screenshots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>Скриншоты</div>
     <div class="nav-item" data-view="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Календарь</div>
     <div class="nav-item" data-view="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Аналитика</div>
     <div class="nav-item" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Счета</div>
@@ -170,6 +172,51 @@
       </div>
     </section>
 
+    <section class="view2" id="view-screenshots">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="dot"></span>Новый скриншот</div>
+          <div class="panel-note">Ctrl+V — вставить из буфера обмена</div>
+        </div>
+        <div class="shot-add">
+          <div class="shot-drop" id="shotDrop" tabindex="0">
+            <div class="shot-drop-empty" id="shotDropEmpty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>
+              <div class="sd-title">Вставьте скриншот через Ctrl+V</div>
+              <div class="sd-sub">или перетащите файл сюда</div>
+              <button class="btn btn-ghost" type="button" id="shotPickBtn">Выбрать файл</button>
+            </div>
+            <img id="shotPreview" alt="Предпросмотр скриншота" style="display:none;">
+            <button class="shot-clear" id="shotClear" type="button" title="Убрать">×</button>
+          </div>
+          <div class="shot-fields">
+            <div class="form-field"><label>Торговая пара</label><input type="text" id="sf-pair" style="text-transform:uppercase" autocomplete="off"></div>
+            <div class="form-field"><label>Сделка в журнале</label><select id="sf-trade"></select></div>
+            <div class="form-field"><label>Подпись</label><textarea id="sf-note"></textarea></div>
+            <div class="btn-row"><button class="btn" type="button" id="shotSaveBtn">Сохранить скриншот</button></div>
+          </div>
+        </div>
+        <input type="file" id="shotFile" accept="image/*" hidden>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="dot"></span>Галерея</div>
+          <div class="shot-filters">
+            <select id="shotFilterPair" aria-label="Фильтр по паре"></select>
+            <select id="shotFilterLink" aria-label="Фильтр по привязке">
+              <option value="all">Все</option>
+              <option value="linked">Со сделкой</option>
+              <option value="unlinked">Без сделки</option>
+            </select>
+            <div class="panel-note" id="shotCount">0 скриншотов</div>
+          </div>
+        </div>
+        <div class="shot-grid" id="shotGrid"></div>
+        <div class="empty-state" id="shotEmpty">Скриншотов пока нет — вставьте первый через Ctrl+V.</div>
+      </div>
+    </section>
+
     <section class="view2" id="view-calendar">
       <div class="panel">
         <div class="panel-head">
@@ -262,6 +309,14 @@
       <div id="tradeDetailWrap" style="display:none;">
         <div class="detail-grid" id="detailGrid"></div>
         <div class="form-field"><label>Комментарий</label><div class="detail-note" id="detailNote">—</div></div>
+        <div class="form-field" style="margin-top:16px;">
+          <label>Скриншоты</label>
+          <div class="detail-shots" id="detailShots"></div>
+          <div class="detail-shot-actions">
+            <div class="fhint">Ctrl+V — вставить скриншот прямо в эту сделку</div>
+            <button class="btn btn-ghost" type="button" id="detailAddShot">+ Добавить через вкладку</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-foot" id="tradeModalFoot">
@@ -316,6 +371,29 @@
     <div class="modal-foot">
       <button class="btn btn-ghost" id="acctModalCancel">Закрыть</button>
       <button class="btn btn-ghost" id="acctModalDelete" style="color:var(--red);border-color:var(--red-dim);">🗑 Удалить счёт</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shotViewOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div class="modal-title" id="shotViewTitle">Скриншот</div>
+      <button class="modal-close" id="shotViewClose">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="shot-view-img" id="shotViewImgWrap" title="Клик — увеличить / уменьшить"><img id="shotViewImg" alt=""></div>
+      <div class="fhint shot-view-meta" id="shotViewMeta"></div>
+      <div class="form-grid" style="margin-top:14px;">
+        <div class="form-field"><label>Торговая пара</label><input type="text" id="sv-pair" style="text-transform:uppercase" autocomplete="off"></div>
+        <div class="form-field span2"><label>Сделка в журнале</label><select id="sv-trade"></select></div>
+        <div class="form-field span3"><label>Подпись</label><textarea id="sv-note"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="shotViewDelete" style="margin-right:auto;color:var(--red);border-color:var(--red-dim);">Удалить</button>
+      <button class="btn btn-ghost" id="shotViewOpenTrade" style="display:none;">Открыть сделку</button>
+      <button class="btn" id="shotViewSave">Сохранить</button>
     </div>
   </div>
 </div>
