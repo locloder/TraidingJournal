@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,17 @@
 </head>
 <body data-theme="ledger">
 
-<button class="theme-toggle" id="themeToggle" type="button" title="Сменить тему" aria-label="Сменить тему">
-  <svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></svg>
-  <svg class="ti-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/></svg>
-</button>
+<div class="top-controls">
+  <div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Language">
+    <button type="button" data-lang="en">EN</button>
+    <button type="button" data-lang="uk">UA</button>
+    <button type="button" data-lang="ru">RU</button>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button" data-i18n-title="theme.toggle" data-i18n-aria="theme.toggle" title="Toggle theme" aria-label="Toggle theme">
+    <svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></svg>
+    <svg class="ti-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/></svg>
+  </button>
+</div>
 
 <section id="view-home">
   <div class="home-wrap">
@@ -31,16 +38,17 @@
 
     <div class="home-cols">
       <div class="home-panel">
-        <div class="home-panel-title">Перейти</div>
-        <div class="home-link" data-goto="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Обзор</div>
-        <div class="home-link" data-goto="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg>Журнал сделок</div>
-        <div class="home-link" data-goto="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Календарь</div>
+        <div class="home-panel-title" data-i18n="nav.go">Go to</div>
+        <div class="home-link" data-goto="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span data-i18n="view.dashboard">Overview</span></div>
+        <div class="home-link" data-goto="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg><span data-i18n="view.journal">Trade Journal</span></div>
+        <div class="home-link" data-goto="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span data-i18n="view.calendar">Calendar</span></div>
+        <div class="home-link" data-goto="forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20h18"/><path d="M4 16c3-1 4-6 7-7s4 3 6 1 2-5 3-6"/><path d="M14 4l2 2 2-2" stroke-dasharray="2 2"/></svg><span data-i18n="view.forecast">Math Analysis</span></div>
       </div>
       <div class="home-panel">
-        <div class="home-panel-title">Ещё</div>
-        <div class="home-link" data-goto="screenshots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>Скриншоты</div>
-        <div class="home-link" data-goto="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Аналитика</div>
-        <div class="home-link" data-goto="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Счета</div>
+        <div class="home-panel-title" data-i18n="nav.more">More</div>
+        <div class="home-link" data-goto="screenshots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg><span data-i18n="view.screenshots">Screenshots</span></div>
+        <div class="home-link" data-goto="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg><span data-i18n="view.analytics">Analytics</span></div>
+        <div class="home-link" data-goto="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span data-i18n="view.accounts">Accounts</span></div>
       </div>
     </div>
 
@@ -54,15 +62,16 @@
       <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20V13M22 20V7"/></svg>
       <span class="brand-name">Trading Journal</span>
     </div>
-    <div class="nav-label">Навигация</div>
-    <div class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Обзор</div>
-    <div class="nav-item" data-view="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg>Журнал сделок</div>
-    <div class="nav-item" data-view="screenshots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>Скриншоты</div>
-    <div class="nav-item" data-view="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Календарь</div>
-    <div class="nav-item" data-view="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Аналитика</div>
-    <div class="nav-item" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Счета</div>
+    <div class="nav-label" data-i18n="nav.navigation">Navigation</div>
+    <div class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span data-i18n="view.dashboard">Overview</span></div>
+    <div class="nav-item" data-view="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg><span data-i18n="view.journal">Trade Journal</span></div>
+    <div class="nav-item" data-view="screenshots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg><span data-i18n="view.screenshots">Screenshots</span></div>
+    <div class="nav-item" data-view="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span data-i18n="view.calendar">Calendar</span></div>
+    <div class="nav-item" data-view="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg><span data-i18n="view.analytics">Analytics</span></div>
+    <div class="nav-item" data-view="forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20h18"/><path d="M4 16c3-1 4-6 7-7s4 3 6 1 2-5 3-6"/><path d="M14 4l2 2 2-2" stroke-dasharray="2 2"/></svg><span data-i18n="view.forecast">Math Analysis</span></div>
+    <div class="nav-item" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span data-i18n="view.accounts">Accounts</span></div>
     <div class="sidebar-foot">
-      <div class="k">Общий P&amp;L</div>
+      <div class="k" data-i18n="common.totalPnl">Total P&amp;L</div>
       <div class="v" id="sidebarPnl">$0.00</div>
     </div>
   </aside>
@@ -70,8 +79,8 @@
   <main class="main">
     <div class="topbar">
       <div>
-        <div class="crumbs" id="crumbs">Trading Journal / Обзор</div>
-        <div class="pagetitle" id="pagetitle">Обзор</div>
+        <div class="crumbs" id="crumbs">Trading Journal / Overview</div>
+        <div class="pagetitle" id="pagetitle">Overview</div>
       </div>
       <div class="pagetime"><span id="dateStr"></span> · <span id="clockStr"></span></div>
     </div>
@@ -79,7 +88,7 @@
     <section class="view2" id="view-dashboard">
       <div class="widget-grid">
         <div class="widget-card widget-gauge">
-          <div class="widget-head"><span class="widget-title">Прогресс <i id="gaugeSubtitle">· доходность</i></span><span class="widget-dots">⋮</span></div>
+          <div class="widget-head"><span class="widget-title"><span data-i18n="w.progress">Progress</span> <i id="gaugeSubtitle">· returns</i></span><span class="widget-dots">⋮</span></div>
           <div class="gauge-wrap">
             <svg viewBox="0 0 200 118" class="gauge-svg">
               <defs>
@@ -99,7 +108,7 @@
             </svg>
             <div class="gauge-center">
               <div class="gauge-value" id="gaugeValue">+0.0%</div>
-              <div class="gauge-label">текущий прогресс</div>
+              <div class="gauge-label" data-i18n="w.currentProgress">current progress</div>
             </div>
           </div>
           <div class="gauge-range">
@@ -109,10 +118,10 @@
         </div>
 
         <div class="widget-card widget-balance">
-          <div class="widget-head"><span class="widget-title">Баланс счетов</span><span class="widget-dots">⋮</span></div>
+          <div class="widget-head"><span class="widget-title" data-i18n="w.balance">Account balance</span><span class="widget-dots">⋮</span></div>
           <div class="balance-value" id="w-balance">$0.00</div>
           <div class="balance-sub">
-            <span class="balance-sub-label">Общий P&amp;L</span>
+            <span class="balance-sub-label" data-i18n="common.totalPnl">Total P&amp;L</span>
             <span class="balance-sub-value" id="w-pnl">$0.00</span>
           </div>
         </div>
@@ -136,18 +145,18 @@
           </div>
           <div class="ratio-bar"><div class="ratio-bar-long" id="ratioBarLong"></div><div class="ratio-bar-short" id="ratioBarShort"></div></div>
           <div class="ratio-rows">
-            <div class="ratio-row"><span>Long сделки</span><b id="ratioLongCount">0</b></div>
-            <div class="ratio-row"><span>Short сделки</span><b id="ratioShortCount">0</b></div>
+            <div class="ratio-row"><span data-i18n="w.longTrades">Long trades</span><b id="ratioLongCount">0</b></div>
+            <div class="ratio-row"><span data-i18n="w.shortTrades">Short trades</span><b id="ratioShortCount">0</b></div>
           </div>
         </div>
       </div>
       <div class="grid-2">
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><span class="dot"></span>Профиль результатов</div><div class="panel-note">4 показателя</div></div>
+          <div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="p.profile">Performance profile</span></div><div class="panel-note" data-i18n="p.metrics4">4 metrics</div></div>
           <div class="chart-box chart-box-square"><canvas id="radarChart"></canvas></div>
         </div>
         <div class="panel">
-          <div class="panel-head"><div class="panel-title"><span class="dot"></span>Кривая депозита</div><div class="panel-note" id="growthNote">нет данных</div></div>
+          <div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="p.equity">Equity curve</span></div><div class="panel-note" id="growthNote">no data</div></div>
           <div class="chart-box"><canvas id="growthChart"></canvas></div>
         </div>
       </div>
@@ -156,44 +165,44 @@
     <section class="view2" id="view-journal">
       <div class="panel">
         <div class="panel-head">
-          <div class="panel-title"><span class="dot"></span>Журнал сделок</div>
+          <div class="panel-title"><span class="dot"></span><span data-i18n="view.journal">Trade Journal</span></div>
           <div class="btn-row">
-            <div class="panel-note" id="journalCount" style="align-self:center;">0 записей</div>
-            <button class="btn" id="openAddTrade">+ Добавить сделку</button>
+            <div class="panel-note" id="journalCount" style="align-self:center;">0 records</div>
+            <button class="btn" id="openAddTrade" data-i18n="j.add">+ Add trade</button>
           </div>
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>№</th><th>Открытие</th><th>Закрытие</th><th>Инстр.</th><th>Напр.</th><th>Сессия</th><th>Счёт</th><th>Gross</th><th>Комиссия</th><th>Net</th><th>Лот</th><th>RR</th><th>Сетап</th><th>Заметка</th><th></th></tr></thead>
+            <thead><tr><th data-i18n="j.th.num">#</th><th data-i18n="j.th.open">Opened</th><th data-i18n="j.th.close">Closed</th><th data-i18n="j.th.instr">Instr.</th><th data-i18n="j.th.dir">Dir.</th><th data-i18n="j.th.session">Session</th><th data-i18n="j.th.account">Account</th><th data-i18n="j.th.gross">Gross</th><th data-i18n="j.th.comm">Commission</th><th data-i18n="j.th.net">Net</th><th data-i18n="j.th.lot">Lot</th><th data-i18n="j.th.rr">RR</th><th data-i18n="j.th.setup">Setup</th><th data-i18n="j.th.note">Note</th><th></th></tr></thead>
             <tbody id="journalBody"></tbody>
           </table>
         </div>
-        <div class="empty-state" id="journalEmpty">Пока нет ни одной сделки — нажмите «Добавить сделку», чтобы внести первую.</div>
+        <div class="empty-state" id="journalEmpty" data-i18n="j.empty">No trades yet — click “Add trade” to log your first one.</div>
       </div>
     </section>
 
     <section class="view2" id="view-screenshots">
       <div class="panel">
         <div class="panel-head">
-          <div class="panel-title"><span class="dot"></span>Новый скриншот</div>
-          <div class="panel-note">Ctrl+V — вставить из буфера обмена</div>
+          <div class="panel-title"><span class="dot"></span><span data-i18n="s.new">New screenshot</span></div>
+          <div class="panel-note" data-i18n="s.pasteHint">Ctrl+V — paste from clipboard</div>
         </div>
         <div class="shot-add">
           <div class="shot-drop" id="shotDrop" tabindex="0">
             <div class="shot-drop-empty" id="shotDropEmpty">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="9" cy="10.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>
-              <div class="sd-title">Вставьте скриншот через Ctrl+V</div>
-              <div class="sd-sub">или перетащите файл сюда</div>
-              <button class="btn btn-ghost" type="button" id="shotPickBtn">Выбрать файл</button>
+              <div class="sd-title" data-i18n="s.dropTitle">Paste a screenshot with Ctrl+V</div>
+              <div class="sd-sub" data-i18n="s.dropSub">or drag a file here</div>
+              <button class="btn btn-ghost" type="button" id="shotPickBtn" data-i18n="s.pick">Choose file</button>
             </div>
-            <img id="shotPreview" alt="Предпросмотр скриншота" style="display:none;">
-            <button class="shot-clear" id="shotClear" type="button" title="Убрать">×</button>
+            <img id="shotPreview" data-i18n-alt="s.previewAlt" alt="Screenshot preview" style="display:none;">
+            <button class="shot-clear" id="shotClear" type="button" data-i18n-title="s.remove" title="Remove">×</button>
           </div>
           <div class="shot-fields">
-            <div class="form-field"><label>Торговая пара</label><input type="text" id="sf-pair" style="text-transform:uppercase" autocomplete="off"></div>
-            <div class="form-field"><label>Сделка в журнале</label><select id="sf-trade"></select></div>
-            <div class="form-field"><label>Подпись</label><textarea id="sf-note"></textarea></div>
-            <div class="btn-row"><button class="btn" type="button" id="shotSaveBtn">Сохранить скриншот</button></div>
+            <div class="form-field"><label data-i18n="s.pair">Trading pair</label><input type="text" id="sf-pair" style="text-transform:uppercase" autocomplete="off"></div>
+            <div class="form-field"><label data-i18n="s.trade">Journal trade</label><select id="sf-trade"></select></div>
+            <div class="form-field"><label data-i18n="s.caption">Caption</label><textarea id="sf-note"></textarea></div>
+            <div class="btn-row"><button class="btn" type="button" id="shotSaveBtn" data-i18n="s.save">Save screenshot</button></div>
           </div>
         </div>
         <input type="file" id="shotFile" accept="image/*" hidden>
@@ -201,19 +210,19 @@
 
       <div class="panel">
         <div class="panel-head">
-          <div class="panel-title"><span class="dot"></span>Галерея</div>
+          <div class="panel-title"><span class="dot"></span><span data-i18n="s.gallery">Gallery</span></div>
           <div class="shot-filters">
-            <select id="shotFilterPair" aria-label="Фильтр по паре"></select>
-            <select id="shotFilterLink" aria-label="Фильтр по привязке">
-              <option value="all">Все</option>
-              <option value="linked">Со сделкой</option>
-              <option value="unlinked">Без сделки</option>
+            <select id="shotFilterPair" data-i18n-aria="s.filterPair" aria-label="Filter by pair"></select>
+            <select id="shotFilterLink" data-i18n-aria="s.filterLink" aria-label="Filter by link">
+              <option value="all" data-i18n="s.all">All</option>
+              <option value="linked" data-i18n="s.linked">With trade</option>
+              <option value="unlinked" data-i18n="s.unlinked">Without trade</option>
             </select>
-            <div class="panel-note" id="shotCount">0 скриншотов</div>
+            <div class="panel-note" id="shotCount">0 screenshots</div>
           </div>
         </div>
         <div class="shot-grid" id="shotGrid"></div>
-        <div class="empty-state" id="shotEmpty">Скриншотов пока нет — вставьте первый через Ctrl+V.</div>
+        <div class="empty-state" id="shotEmpty">No screenshots yet — paste the first one with Ctrl+V.</div>
       </div>
     </section>
 
@@ -221,7 +230,7 @@
       <div class="panel">
         <div class="panel-head">
           <div class="cal-nav"><div class="cal-btn" id="calPrev">‹</div><div class="cal-month" id="calMonthLabel">—</div><div class="cal-btn" id="calNext">›</div></div>
-          <div class="cal-summary" id="calSummary">P&amp;L: $0.00 · Сделок: 0</div>
+          <div class="cal-summary" id="calSummary">P&amp;L: $0.00 · Trades: 0</div>
         </div>
         <div class="cal-grid" id="calGrid"></div>
       </div>
@@ -229,31 +238,92 @@
 
     <section class="view2" id="view-analytics">
       <div class="stat-grid">
-        <div class="stat-card"><div class="stat-top"><div class="stat-label">Win Rate</div><span class="stat-icon ring" id="a-winrate-ring" style="--icon-color:var(--accent)"></span></div><div class="stat-value" id="a-winrate">—</div></div>
-        <div class="stat-card"><div class="stat-top"><div class="stat-label">Total P&amp;L</div><span class="stat-icon" style="--icon-color:var(--green)">$</span></div><div class="stat-value" id="a-pnl">—</div></div>
-        <div class="stat-card"><div class="stat-top"><div class="stat-label">Returns</div><span class="stat-icon" style="--icon-color:var(--accent)">✓</span></div><div class="stat-value" id="a-returns">—</div></div>
-        <div class="stat-card"><div class="stat-top"><div class="stat-label">Profit Factor</div><span class="stat-icon" style="--icon-color:var(--amber)">↕</span></div><div class="stat-value" id="a-pf">—</div></div>
-        <div class="stat-card"><div class="stat-top"><div class="stat-label">Consistency</div><span class="stat-icon" style="--icon-color:var(--red)">◎</span></div><div class="stat-value" id="a-cons">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="a.winrate">Win Rate</div><span class="stat-icon ring" id="a-winrate-ring" style="--icon-color:var(--accent)"></span></div><div class="stat-value" id="a-winrate">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="a.pnl">Total P&amp;L</div><span class="stat-icon" style="--icon-color:var(--green)">$</span></div><div class="stat-value" id="a-pnl">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="a.returns">Returns</div><span class="stat-icon" style="--icon-color:var(--accent)">✓</span></div><div class="stat-value" id="a-returns">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="a.pf">Profit Factor</div><span class="stat-icon" style="--icon-color:var(--amber)">↕</span></div><div class="stat-value" id="a-pf">—</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="a.cons">Consistency</div><span class="stat-icon" style="--icon-color:var(--red)">◎</span></div><div class="stat-value" id="a-cons">—</div></div>
       </div>
       <div class="grid-2">
-        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="dot"></span>P&amp;L по сессиям</div></div><div class="chart-box"><canvas id="sessionChart"></canvas></div></div>
-        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="dot"></span>R-мультипликаторы</div></div><div class="chart-box"><canvas id="riskChart"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="a.sessions">P&amp;L by session</span></div></div><div class="chart-box"><canvas id="sessionChart"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="a.rmult">R-multiples</span></div></div><div class="chart-box"><canvas id="riskChart"></canvas></div></div>
+      </div>
+    </section>
+
+    <section class="view2" id="view-forecast">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><span class="dot"></span><span data-i18n="f.settings">Forecast settings</span></div>
+          <div class="fc-head-right">
+            <span class="fc-demo-chip" id="fcDemoChip"><span data-i18n="f.demoOn">Demo data</span><button type="button" id="fcDemoOff" data-i18n="f.demoOff">Turn off</button></span>
+            <div class="panel-note" id="fcSample">—</div>
+          </div>
+        </div>
+        <div class="fc-controls">
+          <div class="form-field">
+            <label><span data-i18n="f.horizon">Horizon, trades</span> · <b id="fcHorizonVal">50</b></label>
+            <input type="range" id="fcHorizon" min="10" max="200" step="5" value="50">
+          </div>
+          <div class="form-field">
+            <label data-i18n="f.sims">Simulations</label>
+            <select id="fcSims"><option value="500">500</option><option value="1000" selected>1000</option><option value="3000">3000</option><option value="5000">5000</option></select>
+          </div>
+          <div class="form-field">
+            <label data-i18n="f.account">Account</label>
+            <select id="fcAccount"></select>
+          </div>
+          <div class="form-field fc-btn-field">
+            <button class="btn" type="button" id="fcRecalc" data-i18n="f.recalc">↻ Recalculate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state fc-empty" id="fcEmpty">
+        <div data-i18n="f.notEnough">A forecast needs at least 5 closed trades. Add trades to the journal or try the demo data.</div>
+        <button class="btn" type="button" id="fcDemoOn" data-i18n="f.useDemo">Use demo data</button>
+      </div>
+
+      <div id="fcContent">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="f.expectancy">Expectancy / trade</div><span class="stat-icon" style="--icon-color:var(--accent)">E</span></div><div class="stat-value" id="fc-exp">—</div><div class="stat-sub" id="fc-exp-sub"></div></div>
+          <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="f.median">Median forecast</div><span class="stat-icon" style="--icon-color:var(--green)">x̃</span></div><div class="stat-value" id="fc-med">—</div><div class="stat-sub" id="fc-med-sub"></div></div>
+          <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="f.probProfit">Probability of profit</div><span class="stat-icon ring" id="fc-prob-ring" style="--icon-color:var(--accent)"></span></div><div class="stat-value" id="fc-prob">—</div><div class="stat-sub" id="fc-prob-sub"></div></div>
+          <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="f.ddRisk">Drawdown risk (95%)</div><span class="stat-icon" style="--icon-color:var(--red)">↓</span></div><div class="stat-value" id="fc-dd">—</div><div class="stat-sub" id="fc-dd-sub"></div></div>
+          <div class="stat-card"><div class="stat-top"><div class="stat-label" data-i18n="f.kelly">Kelly fraction</div><span class="stat-icon" style="--icon-color:var(--amber)">f*</span></div><div class="stat-value" id="fc-kelly">—</div><div class="stat-sub" id="fc-kelly-sub"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="f.chartMain">Equity forecast: Monte Carlo + linear trend</span></div><div class="panel-note" id="fcMainNote"></div></div>
+          <div class="chart-box chart-box-tall"><canvas id="forecastChart"></canvas></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="f.chartDist">Distribution of final balance</span></div><div class="panel-note" id="fcDistNote"></div></div>
+            <div class="chart-box"><canvas id="distChart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="f.methods">Methods and formulas</span></div></div>
+            <div class="fc-methods" id="fcMethods"></div>
+          </div>
+        </div>
+        <div class="fc-disclaimer" data-i18n="f.disclaimer">The forecast is a statistical model built on past trades. It is not a guarantee of future results.</div>
       </div>
     </section>
 
     <section class="view2" id="view-accounts">
       <div class="panel">
-        <div class="panel-head"><div class="panel-title"><span class="dot"></span>Добавить счёт</div></div>
+        <div class="panel-head"><div class="panel-title"><span class="dot"></span><span data-i18n="acc.add">Add account</span></div></div>
         <div class="form-grid" style="grid-template-columns:repeat(4,1fr)">
-          <div class="form-field"><label>Название</label><input type="text" id="af-name" placeholder="Personal"></div>
-          <div class="form-field"><label>Тип</label><select id="af-type"><option>Live</option><option>Funded</option><option>Backtest</option></select></div>
-          <div class="form-field"><label>Начальный баланс, $</label><input type="text" inputmode="decimal" id="af-init" placeholder="10000"></div>
-          <div class="form-field"><label>Цель, $</label><input type="text" inputmode="decimal" id="af-goal" placeholder="50000"></div>
+          <div class="form-field"><label data-i18n="acc.name">Name</label><input type="text" id="af-name" placeholder="Personal"></div>
+          <div class="form-field"><label data-i18n="acc.type">Type</label><select id="af-type"><option>Live</option><option>Funded</option><option>Backtest</option></select></div>
+          <div class="form-field"><label data-i18n="acc.init">Initial balance, $</label><input type="text" inputmode="decimal" id="af-init" placeholder="10000"></div>
+          <div class="form-field"><label data-i18n="acc.goal">Goal, $</label><input type="text" inputmode="decimal" id="af-goal" placeholder="50000"></div>
         </div>
-        <div class="btn-row"><button class="btn" id="addAcctBtn">+ Добавить счёт</button></div>
+        <div class="btn-row"><button class="btn" id="addAcctBtn" data-i18n="acc.addBtn">+ Add account</button></div>
       </div>
       <div class="acct-grid" id="acctGrid"></div>
-      <div class="empty-state" id="acctEmpty">Пока нет счетов — добавьте первый выше.</div>
+      <div class="empty-state" id="acctEmpty" data-i18n="acc.empty">No accounts yet — add the first one above.</div>
     </section>
   </main>
 </div>
@@ -261,39 +331,39 @@
 <div class="modal-overlay" id="tradeModalOverlay">
   <div class="modal modal-lg">
     <div class="modal-head">
-      <div class="modal-title" id="tradeModalTitle">Новая сделка</div>
+      <div class="modal-title" id="tradeModalTitle">New trade</div>
       <button class="modal-close" id="tradeModalClose">×</button>
     </div>
     <div class="modal-body" id="tradeModalBody">
       <div id="tradeFormWrap">
         <div class="form-grid">
-          <div class="form-field"><label>Открытие</label><input type="datetime-local" step="1" id="f-open"></div>
-          <div class="form-field"><label>Закрытие</label><input type="datetime-local" step="1" id="f-close"></div>
-          <div class="form-field"><label>Счёт</label><select id="f-acc"></select></div>
+          <div class="form-field"><label data-i18n="t.open">Opened</label><input type="datetime-local" step="1" id="f-open"></div>
+          <div class="form-field"><label data-i18n="t.close">Closed</label><input type="datetime-local" step="1" id="f-close"></div>
+          <div class="form-field"><label data-i18n="t.account">Account</label><select id="f-acc"></select></div>
 
-          <div class="form-field span3"><label>Введите торговую пару</label><input type="text" id="f-pair" style="text-transform:uppercase" autocomplete="off"></div>
+          <div class="form-field span3"><label data-i18n="t.pair">Enter trading pair</label><input type="text" id="f-pair" style="text-transform:uppercase" autocomplete="off"></div>
 
-          <div class="form-field"><label>Цена входа</label><input type="text" inputmode="decimal" id="f-entry"></div>
-          <div class="form-field"><label>Цена выхода</label><input type="text" inputmode="decimal" id="f-exit"></div>
+          <div class="form-field"><label data-i18n="t.entry">Entry price</label><input type="text" inputmode="decimal" id="f-entry"></div>
+          <div class="form-field"><label data-i18n="t.exit">Exit price</label><input type="text" inputmode="decimal" id="f-exit"></div>
           <div class="form-field"></div>
 
-          <div class="form-field"><label>S/L (стоп-лосс)</label><input type="text" inputmode="decimal" id="f-sl"></div>
-          <div class="form-field"><label>T/P (тейк-профит)</label><input type="text" inputmode="decimal" id="f-tp"></div>
-          <div class="form-field"><label>Gross P&amp;L, $</label><input type="text" inputmode="decimal" id="f-gross"></div>
+          <div class="form-field"><label data-i18n="t.sl">S/L (stop loss)</label><input type="text" inputmode="decimal" id="f-sl"></div>
+          <div class="form-field"><label data-i18n="t.tp">T/P (take profit)</label><input type="text" inputmode="decimal" id="f-tp"></div>
+          <div class="form-field"><label data-i18n="t.gross">Gross P&amp;L, $</label><input type="text" inputmode="decimal" id="f-gross"></div>
 
-          <div class="form-field"><label>Комиссия, $ (со знаком)</label><input type="text" inputmode="decimal" id="f-comm"></div>
-          <div class="form-field span2"><label>Введите стратегию</label><input type="text" id="f-setup"></div>
+          <div class="form-field"><label data-i18n="t.comm">Commission, $ (signed)</label><input type="text" inputmode="decimal" id="f-comm"></div>
+          <div class="form-field span2"><label data-i18n="t.setup">Enter strategy</label><input type="text" id="f-setup"></div>
 
           <div class="riskrr-box">
             <div class="rr-half">
-              <label>Объём, лот
-                <span class="rr-info" data-tip="Размер позиции в лотах — например 0.4 для XAUUSD или 2 для EURUSD, как в MT5.">?</span>
+              <label><span data-i18n="t.lot">Volume, lot</span>
+                <span class="rr-info" data-i18n-tip="t.lotTip" data-tip="Position size in lots — e.g. 0.4 for XAUUSD or 2 for EURUSD, as in MT5.">?</span>
               </label>
               <input type="text" inputmode="decimal" id="f-risk">
             </div>
             <div class="rr-half">
-              <label>RR, риск/прибыль
-                <span class="rr-info" data-tip="Соотношение потенциальной прибыли к риску по цене: (T/P − вход) ÷ (вход − S/L).">?</span>
+              <label><span data-i18n="t.rr">RR, risk/reward</span>
+                <span class="rr-info" data-i18n-tip="t.rrTip" data-tip="Ratio of potential profit to risk by price: (T/P − entry) ÷ (entry − S/L).">?</span>
               </label>
               <input type="text" inputmode="decimal" id="f-rr">
               <div class="fhint" id="rrAutoHint">&nbsp;</div>
@@ -301,28 +371,28 @@
           </div>
         </div>
         <div class="form-field">
-          <label>Комментарий / разбор сделки</label>
+          <label data-i18n="t.note">Comment / trade review</label>
           <textarea id="f-note"></textarea>
         </div>
       </div>
 
       <div id="tradeDetailWrap" style="display:none;">
         <div class="detail-grid" id="detailGrid"></div>
-        <div class="form-field"><label>Комментарий</label><div class="detail-note" id="detailNote">—</div></div>
+        <div class="form-field"><label data-i18n="d.comment">Comment</label><div class="detail-note" id="detailNote">—</div></div>
         <div class="form-field" style="margin-top:16px;">
-          <label>Скриншоты</label>
+          <label data-i18n="d.shots">Screenshots</label>
           <div class="detail-shots" id="detailShots"></div>
           <div class="detail-shot-actions">
-            <div class="fhint">Ctrl+V — вставить скриншот прямо в эту сделку</div>
-            <button class="btn btn-ghost" type="button" id="detailAddShot">+ Добавить через вкладку</button>
+            <div class="fhint" data-i18n="d.pasteHint">Ctrl+V — paste a screenshot right into this trade</div>
+            <button class="btn btn-ghost" type="button" id="detailAddShot" data-i18n="d.addViaTab">+ Add via tab</button>
           </div>
         </div>
       </div>
     </div>
     <div class="modal-foot" id="tradeModalFoot">
-      <button class="btn btn-ghost" id="tradeModalCancel">Отмена</button>
-      <button class="btn btn-ghost" id="tradeModalEdit" style="display:none;">✎ Редактировать</button>
-      <button class="btn" id="tradeModalSave">Сохранить</button>
+      <button class="btn btn-ghost" id="tradeModalCancel" data-i18n="common.cancel">Cancel</button>
+      <button class="btn btn-ghost" id="tradeModalEdit" style="display:none;" data-i18n="common.edit">✎ Edit</button>
+      <button class="btn" id="tradeModalSave" data-i18n="common.save">Save</button>
     </div>
   </div>
 </div>
@@ -330,23 +400,23 @@
 <div class="modal-overlay day-modal" id="dayModalOverlay">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-title" id="dayModalTitle">21 августа 2026</div>
+      <div class="modal-title" id="dayModalTitle">—</div>
       <button class="modal-close" id="dayModalClose">×</button>
     </div>
     <div class="modal-body">
       <div class="day-summary-row">
         <div>
-          <div class="dsr-label">P&amp;L за день</div>
+          <div class="dsr-label" data-i18n="day.pnl">P&amp;L for the day</div>
           <div class="dsr-pnl" id="dayModalPnl">$0.00</div>
         </div>
-        <div class="dsr-label" id="dayModalCount">0 сделок</div>
+        <div class="dsr-label" id="dayModalCount">0 trades</div>
       </div>
       <div class="day-trade-list" id="dayTradeList"></div>
-      <div class="day-empty" id="dayModalEmpty" style="display:none;">В этот день сделок не было.</div>
+      <div class="day-empty" id="dayModalEmpty" style="display:none;" data-i18n="day.empty">No trades on this day.</div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" id="dayModalCancel">Закрыть</button>
-      <button class="btn" id="dayModalAddTrade">+ Добавить сделку на этот день</button>
+      <button class="btn btn-ghost" id="dayModalCancel" data-i18n="common.close">Close</button>
+      <button class="btn" id="dayModalAddTrade" data-i18n="day.add">+ Add trade on this day</button>
     </div>
   </div>
 </div>
@@ -354,23 +424,23 @@
 <div class="modal-overlay day-modal" id="acctModalOverlay">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-title" id="acctModalTitle">Счёт</div>
+      <div class="modal-title" id="acctModalTitle" data-i18n="acc.title">Account</div>
       <button class="modal-close" id="acctModalClose">×</button>
     </div>
     <div class="modal-body">
       <div class="day-summary-row">
         <div>
-          <div class="dsr-label">Текущий баланс</div>
+          <div class="dsr-label" data-i18n="acc.balance">Current balance</div>
           <div class="dsr-pnl" id="acctModalBalance">$0.00</div>
         </div>
-        <div class="dsr-label" id="acctModalCount">0 сделок</div>
+        <div class="dsr-label" id="acctModalCount">0 trades</div>
       </div>
       <div class="day-trade-list" id="acctTradeList"></div>
-      <div class="day-empty" id="acctModalEmpty" style="display:none;">По этому счёту сделок пока нет.</div>
+      <div class="day-empty" id="acctModalEmpty" style="display:none;" data-i18n="acc.noTrades">No trades on this account yet.</div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" id="acctModalCancel">Закрыть</button>
-      <button class="btn btn-ghost" id="acctModalDelete" style="color:var(--red);border-color:var(--red-dim);">🗑 Удалить счёт</button>
+      <button class="btn btn-ghost" id="acctModalCancel" data-i18n="common.close">Close</button>
+      <button class="btn btn-ghost" id="acctModalDelete" style="color:var(--red);border-color:var(--red-dim);" data-i18n="acc.delBtn">🗑 Delete account</button>
     </div>
   </div>
 </div>
@@ -378,29 +448,31 @@
 <div class="modal-overlay" id="shotViewOverlay">
   <div class="modal modal-lg">
     <div class="modal-head">
-      <div class="modal-title" id="shotViewTitle">Скриншот</div>
+      <div class="modal-title" id="shotViewTitle" data-i18n="s.viewTitle">Screenshot</div>
       <button class="modal-close" id="shotViewClose">×</button>
     </div>
     <div class="modal-body">
-      <div class="shot-view-img" id="shotViewImgWrap" title="Клик — увеличить / уменьшить"><img id="shotViewImg" alt=""></div>
+      <div class="shot-view-img" id="shotViewImgWrap" data-i18n-title="s.zoomHint" title="Click to zoom in / out"><img id="shotViewImg" alt=""></div>
       <div class="fhint shot-view-meta" id="shotViewMeta"></div>
       <div class="form-grid" style="margin-top:14px;">
-        <div class="form-field"><label>Торговая пара</label><input type="text" id="sv-pair" style="text-transform:uppercase" autocomplete="off"></div>
-        <div class="form-field span2"><label>Сделка в журнале</label><select id="sv-trade"></select></div>
-        <div class="form-field span3"><label>Подпись</label><textarea id="sv-note"></textarea></div>
+        <div class="form-field"><label data-i18n="s.pair">Trading pair</label><input type="text" id="sv-pair" style="text-transform:uppercase" autocomplete="off"></div>
+        <div class="form-field span2"><label data-i18n="s.trade">Journal trade</label><select id="sv-trade"></select></div>
+        <div class="form-field span3"><label data-i18n="s.caption">Caption</label><textarea id="sv-note"></textarea></div>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" id="shotViewDelete" style="margin-right:auto;color:var(--red);border-color:var(--red-dim);">Удалить</button>
-      <button class="btn btn-ghost" id="shotViewOpenTrade" style="display:none;">Открыть сделку</button>
-      <button class="btn" id="shotViewSave">Сохранить</button>
+      <button class="btn btn-ghost" id="shotViewDelete" style="margin-right:auto;color:var(--red);border-color:var(--red-dim);" data-i18n="common.delete">Delete</button>
+      <button class="btn btn-ghost" id="shotViewOpenTrade" style="display:none;" data-i18n="s.openTrade">Open trade</button>
+      <button class="btn" id="shotViewSave" data-i18n="common.save">Save</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<script src="i18n.js"></script>
 <script src="db.js"></script>
+<script src="forecast.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

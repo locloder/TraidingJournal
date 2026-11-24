@@ -87,7 +87,6 @@ const TradeDB = (function () {
   return { get, set, delete: del, list, exportAll, importAll, clearAll, available: AVAILABLE };
 })();
 
-/* Хранилище скриншотов: IndexedDB (localStorage слишком мал для картинок) */
 const ShotDB = (function () {
   const NAME = 'tj_shots';
   const STORE = 'shots';
